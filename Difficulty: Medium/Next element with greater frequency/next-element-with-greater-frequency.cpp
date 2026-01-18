@@ -1,25 +1,43 @@
 class Solution {
   public:
-    vector<int> findGreater(vector<int>& arr) {
+    vector<int> nextFreqGreater(vector<int>& arr) {
         // code here
-         unordered_map<int, int> freq;
-        for(auto i : arr){
-            freq[i]++;
+     int i,j,n,k;
+        unordered_map<int,int> mp;
+        stack<pair<int,int>> s;
+        vector<int> ans;
+        n=arr.size();
+        ans.resize(n);
+        for(i=0;i<n;i++)
+        {
+            mp[arr[i]]++;
         }
-        int size = arr.size();
-        stack<int> st;
-        vector<int> result(size, -1);
-        for(int i = size - 1; i >= 0; i--){
-            while(!st.empty() && freq[st.top()] <= freq[arr[i]]){
-                st.pop();
+        ans[n-1]=-1;
+        s.push(make_pair(mp[arr[n-1]],arr[n-1]));
+        for(i=n-2;i>=0;i--)
+        {
+            if(mp[arr[i]]<s.top().first)
+            {   ans[i]=s.top().second;
+                s.push(make_pair(mp[arr[i]],arr[i]));
+                continue;
             }
-            
-            if(!st.empty()){
-                result[i] = st.top();
+            else
+            {
+                while((!s.empty())&&s.top().first<=mp[arr[i]])
+                {
+                    s.pop();
+                }
+                if(s.empty())
+                {
+                    ans[i]=-1;
+                }
+                else
+                {
+                    ans[i]=s.top().second;
+                }
+                s.push(make_pair(mp[arr[i]],arr[i]));
             }
-            
-            st.push(arr[i]);
         }
-        return result;
+        return ans;   
     }
 };
